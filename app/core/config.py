@@ -1,4 +1,6 @@
 from functools import lru_cache
+from typing import Literal
+from pydantic import Field, SecretStr
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 class Settings(BaseSettings):
@@ -24,6 +26,23 @@ class Settings(BaseSettings):
     DB_MAX_OVERFLOW: int = 20
     DB_POOL_TIMEOUT: int = 30
     DB_POOL_RECYCLE: int = 1800
+
+    # Authentication settings
+    JWT_SECRET_KEY: SecretStr = Field(min_length=32)
+    JWT_ALGORITHM: Literal["HS256"] = "HS256"
+    JWT_ISSUER: str = "finance-manager-api"
+
+    ACCESS_TOKEN_EXPIRE_MINUTES: int = Field(
+        default=15,
+        ge=5,
+        le=60
+    )
+
+    REFRESH_TOKEN_EXPIRE_DAYS: int = Field(
+        default=14,
+        ge=1,
+        le=90
+    )
 
     model_config = SettingsConfigDict(
         env_file=".env",
