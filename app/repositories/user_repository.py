@@ -53,3 +53,14 @@ class UserRepository:
             user.roles.append(role)
 
         db.flush()
+
+    
+    @staticmethod
+    def update_password(
+        db: Session,
+        user: User,
+        password_hash: str,
+    ) -> None:
+        user.password_hash = password_hash
+        db.flush()
+

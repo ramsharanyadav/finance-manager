@@ -97,3 +97,25 @@ class RefreshTokenRepository:
         result = db.execute(statement)
 
         return result.rowcount or 0
+
+    
+    @staticmethod
+    def revoke_all_for_user(
+        db: Session,
+        user_id: UUID,
+        revoked_at: datetime,
+    ) -> int:
+
+        statement = (
+            update(RefreshToken)
+            .where(
+                RefreshToken.user_id == user_id,
+                RefreshToken.revoked_at.is_(None),
+            )
+            .values(revoked_at=revoked_at)
+        )
+
+        result = db.execute(statement)
+
+        return result.rowcount or 0
+
